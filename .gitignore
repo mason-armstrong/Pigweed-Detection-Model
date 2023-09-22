@@ -1,0 +1,8 @@
+venv/
+.vscode/
+models/
+*.png
+*.jpg
+data/
+annotations/
+Training Data/
