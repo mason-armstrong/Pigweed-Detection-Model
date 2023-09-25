@@ -5,6 +5,7 @@ import numpy as np
 
 #Annotation name: f"pigweed_{i:03d}.txt
 #Image name: f"pigweed_{i:03d}.png
+
 class Dataloader:
     def __init__(self, image_folder, annotation_folder, batch_size, input_shape, num_classes):
         self.image_folder = image_folder

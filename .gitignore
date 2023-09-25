@@ -6,3 +6,6 @@ models/
 data/
 annotations/
 Training Data/
+my_model.keras
+src/__pycache__/CNNModel.cpython-311.pyc
+src/__pycache__/Dataloader.cpython-311.pyc

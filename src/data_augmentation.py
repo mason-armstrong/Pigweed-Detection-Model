@@ -2,8 +2,6 @@
 import cv2
 import os
 import math
-from tensorflow.python.keras import ImageDataGenerator
-
 
 def read_annotations(txt_path):
     """
@@ -83,6 +81,21 @@ def save_annotations(bounding_boxes, txt_path):
                 for box in bounding_boxes:
                     class_id, center_x, center_y, width, height = box
                     f.write(f"{class_id} {center_x} {center_y} {width} {height}\n")
+                    
+#Function to rotate a single image:
+def rotate_image(image_path, save_path, angle):
+    image = cv2.imread(image_path)
+    if image is None:
+        print("Could not read image")
+        exit()
+    h, w, _ = image.shape
+    #Rotate the image
+    rotated_image = rotate(image, angle)
+    
+    #Save image
+    cv2.imwrite(save_path, rotated_image)
+    
+    
     
 #Function to rotate images:
 def rotate_images(image_folder, annotation_folder, output_folder, angle):
@@ -102,22 +115,7 @@ def rotate_images(image_folder, annotation_folder, output_folder, angle):
             print("Could not read image")
             exit()
         h, w, _ = image.shape
-        
-        #Read the bounding boxes from the annotation file
-        bounding_boxes = read_annotations(annotation_path)
-        
-        #Rotate the image
-        rotated_image = rotate(image, angle)
-        
-        #Rotate the bounding boxes
-        rotated_bounding_boxes = rotate_bounding_boxes(bounding_boxes, angle, w, h)
-        
-        #Save the rotated image and bounding boxes
-        cv2.imwrite(save_path, rotated_image)
-        save_annotations(rotated_bounding_boxes, os.path.join(output_folder, txt_name))
-        
-        #Draw the rotated bounding boxes on the rotated image
-        draw_annotations(save_path, rotated_bounding_boxes, save_path)
+
        
 def draw_annotations(img, bounding_boxes, save_path):
     """
@@ -146,37 +144,48 @@ def draw_annotations(img, bounding_boxes, save_path):
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
         
     cv2.imwrite(save_path, image)
+    
+# Function to get the next index for saving images
+def get_next_index(folder):
+    existing_files = os.listdir(folder)
+    indices = [int(file.split('_')[1].split('.')[0]) for file in existing_files if 'pigweed' in file]
+    return max(indices, default=0) + 1
+
+
+#Function to rename image based on number of images already in directory:
+def rename_images(image_folder):
+    image_names = os.listdir(image_folder)
+    for i, image_name in enumerate(image_names):
+        os.rename(os.path.join(image_folder, image_name), os.path.join(image_folder,f"pigweed_{i:03d}.png"))
+    print("Done renaming images")
 
     
 
 #Loop through directory containing annotated images:
-image_folder = 'Training Data\PigweedDataSet\images'
+image_folder = 'data\\raw\\images\\pigweed'
 annotation_folder = 'Training Data\PigweedDataSet\\annotations'
-output_folder = "Training Data\PigweedDataSet\\rotated_images/"
+output_folder = "Training Data\PigweedDataSet\\rotated_images"
 
-#Rotate Images
-rotate_images(image_folder, annotation_folder, output_folder, 90)
-rotate_images(image_folder, annotation_folder, output_folder, 180)
-rotate_images(image_folder, annotation_folder, output_folder, 270)
-rotate_images(image_folder, annotation_folder, output_folder, 360)
 
-#initialize ImageDataGenerator for binary classification
-datagen = ImageDataGenerator(
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        rotation_range=90,
-        horizontal_flip=True,
-        vertical_flip=True,
-        validation_split=0.2)
 
-#Read images from directory andb apply data augmentation
-train_generator = datagen.flow_from_directory(
-        'Training Data\PigweedDataSet\images',
-        target_size=(224, 224),
-        batch_size=32,
-        class_mode='binary',
-        subset='training')
+# Iterate through directory containing original images, and rotate each image, and save it to the rotated_images folder:
+next_index = get_next_index(output_folder)
+
+for i in range(1, len(os.listdir(image_folder)) + 1):
+        image_name = f"pigweed_{i:03d}.png"
+        image_path = os.path.join(image_folder, image_name)
+
+        for angle in [cv2.ROTATE_90_CLOCKWISE, cv2.ROTATE_180, cv2.ROTATE_90_COUNTERCLOCKWISE]:
+            save_path = os.path.join(output_folder, f"pigweed_{next_index:03d}.png")
+            rotate_image(image_path, save_path, angle)
+            next_index += 1
+
+    
+    
+    
+    
+
+
 
 
 
