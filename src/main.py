@@ -27,7 +27,7 @@ if __name__ == '__main__':
     
     #Training loop
     logging.info(f"Starting training...")
-    for epoch in range(32):
+    for epoch in range(12):
         for batch in range(train_data.num_batches):
             batch_images, batch_annotations = train_data.get_batch()
             loss = cnn_model.model.train_on_batch(batch_images, batch_annotations)
