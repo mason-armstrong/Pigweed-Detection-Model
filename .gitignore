@@ -15,3 +15,6 @@ pigweed*.txt
 labels.cache
 src/__pycache__/
 /YOLOData/
+/__pycache__/
+*.pt
+/*.pt
