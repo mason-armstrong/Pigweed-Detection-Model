@@ -9,3 +9,9 @@ Training Data/
 my_model.keras
 src/__pycache__/CNNModel.cpython-311.pyc
 src/__pycache__/Dataloader.cpython-311.pyc
+*.tfevents.*
+Pigweed_Images_GBIF_Cleaned.csv
+pigweed*.txt
+labels.cache
+src/__pycache__/
+/YOLOData/

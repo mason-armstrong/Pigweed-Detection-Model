@@ -1,0 +1,7 @@
+test: ../test
+train: ../train
+val: ../valid
+
+names:
+  0: not_pigweed
+  1: pigweed

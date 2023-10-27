@@ -37,14 +37,3 @@ def split_data(image_folder, train_folder, val_folder, test_folder, train_split=
         else:
             os.rename(os.path.join(image_folder, image_name), os.path.join(test_folder, image_name))
     print("Done splitting data")
-    
-    
-if __name__ == '__main__':
-    split_data('data/raw/images/combined', 'data/processed/training', 'data/processed/validated', 'data/processed/testing')
-
-    
-    
-    
-    
-
-    
